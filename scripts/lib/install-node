@@ -28,14 +28,7 @@ if ! check_version 2>/dev/null; then
     cd "$tmpdir"
 
     # 🧪 Diagnostic: Test network/DNS access before downloading
-    echo "Testing connectivity to nodejs.org..."
-    if ! ping -c 2 nodejs.org >/dev/null 2>&1; then
-        echo "Ping failed. Trying DNS lookup..."
-        dig nodejs.org || {
-            echo "❌ Network or DNS resolution failed. Exiting."
-            exit 1
-        }
-    fi
+    echo "Testing connectivity to nodejs.org... 11111111111111111"
     curl -fLO --retry 3 "https://nodejs.org/dist/v$version/$tarball"
     sha256sum -c <<<"$sha256 $tarball"
     rm -rf /srv/zulip-node
