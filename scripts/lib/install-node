@@ -26,6 +26,16 @@ if ! check_version 2>/dev/null; then
     tmpdir="$(mktemp -d)"
     trap 'rm -r "$tmpdir"' EXIT
     cd "$tmpdir"
+
+    # 🧪 Diagnostic: Test network/DNS access before downloading
+    echo "Testing connectivity to nodejs.org..."
+    if ! ping -c 2 nodejs.org >/dev/null 2>&1; then
+        echo "Ping failed. Trying DNS lookup..."
+        dig nodejs.org || {
+            echo "❌ Network or DNS resolution failed. Exiting."
+            exit 1
+        }
+    fi
     curl -fLO --retry 3 "https://nodejs.org/dist/v$version/$tarball"
     sha256sum -c <<<"$sha256 $tarball"
     rm -rf /srv/zulip-node
@@ -33,8 +43,6 @@ if ! check_version 2>/dev/null; then
     tar -xJf "$tarball" --no-same-owner --strip-components=1 -C /srv/zulip-node
     ln -sf /srv/zulip-node/bin/{corepack,node,npm,npx} /usr/local/bin
     COREPACK_DEFAULT_TO_LATEST=0 /usr/local/bin/corepack enable
-
-    # Clean up after previous versions of this script
     rm -rf /srv/zulip-yarn /usr/bin/yarn /usr/local/nvm
 
     check_version
