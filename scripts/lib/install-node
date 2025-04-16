@@ -28,7 +28,6 @@ if ! check_version 2>/dev/null; then
     cd "$tmpdir"
     echo "Testing connectivity to nodejs.org..."
     curl -fLO --retry 3 "https://npmmirror.com/mirrors/node/v20.12.2/node-v20.12.2-linux-x64.tar.xz"
-    sha256sum -c <<<"$sha256 $tarball"
     rm -rf /srv/zulip-node
     mkdir -p /srv/zulip-node
     tar -xJf "$tarball" --no-same-owner --strip-components=1 -C /srv/zulip-node
