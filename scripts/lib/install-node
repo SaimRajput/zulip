@@ -27,13 +27,6 @@ if ! check_version 2>/dev/null; then
     trap 'rm -r "$tmpdir"' EXIT
     cd "$tmpdir"
     echo "Testing connectivity to nodejs.org..."
-    if ! ping -c 2 nodejs.org >/dev/null 2>&1; then
-        echo "Ping failed. Trying DNS lookup..."
-        dig nodejs.org || {
-            echo "❌ Network or DNS resolution failed. Exiting."
-            exit 1
-        }
-    fi
     curl -fLO --retry 3 "https://npmmirror.com/mirrors/node/v20.12.2/node-v20.12.2-linux-x64.tar.xz"
     sha256sum -c <<<"$sha256 $tarball"
     rm -rf /srv/zulip-node
